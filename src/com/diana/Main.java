@@ -12,6 +12,36 @@ escribirá ordenado alfabéticamente en B (por ejemplo ‘usa_personas_sorted.tx
 
 public class Main {
 
+    // Método que reciba un array de cadenas de caracteres y vuelque su contenido a un archivo
+    public static void escribeArray(String[] palabras, String nombre){
+        // Propiedades
+        FileWriter fich = null;
+
+        // Código
+        try{
+            fich = new FileWriter(nombre);
+            for(int i = 0; i < palabras.length; i++){
+                fich.write(palabras[i]);
+                // Condicion que evita insertar un * al final del todoo
+                if (i + 1 != palabras.length)
+                    fich.write("*");
+            }
+            // Muestra por pantalla proceso finalizado
+            System.out.println("Palabras insertadas correctamente");
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        finally{
+            try{
+                fich.close();
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     //método que reciba por parámetro un nombre de archivo para dejar sus líneas ordenadas alfabéticamente
     // (no distinguir minúsculas de mayúsculas a la hora de ordenar)
     static void cargarCodigo(String nombre){
@@ -91,20 +121,36 @@ public class Main {
         Scanner sc = null;
         File archivoA;
         File archivoB;
+        String linea;
+        FileReader fill = null;
+        BufferedReader bF = null;
+        Vector<String> contenido = new Vector<String>(); // Uso vector en vez de array por las posiciones variables
 
         try {
+            fill = new FileReader(archivoA);
+            bF = new BufferedReader(fill);
+            linea = bF.readLine();
+
             System.out.println("Que fichero quieres leer?");
             sc = new Scanner(System.in); // Escaner de entrada
-            cargarCodigo(sc.nextLine());
+            archivoA = new File(sc.nextLine());
+
+            // Inserto lineas de fichero en el vector
+            while (linea != null){
+                contenido.add(linea);
+                linea = bF.readLine();
+            }
             sc.close();
 
 
 
 
 
-           // System.out.println("En que fichero quieres escribir?");
-          //  archivoB = new File(sc.nextLine());
-
+           System.out.println("En que fichero quieres escribir?");
+           archivoB = new File(sc.nextLine());
+            escribeArray(contenido, "archivoB");
+            cargarCodigo("archivoB");
+            sc.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
